@@ -1,5 +1,6 @@
 package org.example.appmovies.service;
 
+import org.example.appmovies.exception.MovieNotFoundException;
 import org.example.appmovies.model.Movie;
 import org.example.appmovies.repository.MovieRepository;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,12 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public List<Movie> getAllMovies() {
         return repository.findAll();
+    }
+
+    @Override
+    public Movie getMovieById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new MovieNotFoundException(id));
     }
 }
 
