@@ -6,8 +6,10 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.testng.annotations.Test;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.testng.Assert.assertNotNull;
 
 @DataJpaTest
@@ -39,4 +41,12 @@ class MovieRepositoryTest {
         List<Movie> movies = movieRepository.findAll();
 
         assertEquals(2, movies.size());
-    }}
+    }
+
+    @Test
+    void shouldReturnEmptyWhenMovieNotFound() {
+        Optional<Movie> found = movieRepository.findById(999L);
+
+        assertTrue(found.isEmpty());
+    }
+}
