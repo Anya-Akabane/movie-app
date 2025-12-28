@@ -10,14 +10,14 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import org.example.appmovies.exception.MovieNotFoundException;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.util.Arrays;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -89,4 +89,22 @@ class MovieControllerTest {
         mockMvc.perform(get("/movies/999"))
                 .andExpect(status().isNotFound());
     }
+
+    @Test
+    void shouldDeleteMovie() throws Exception {
+        doNothing().when(movieService).deleteMovie(1L);
+
+        mockMvc.perform(delete("/movies/1"))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void shouldReturn404WhenDeletingNonExistentMovie() throws Exception {
+        doThrow(new MovieNotFoundException(999L))
+                .when(movieService).deleteMovie(999L);
+
+        mockMvc.perform(delete("/movies/999"))
+                .andExpect(status().isNotFound());
+    }
+
 }
