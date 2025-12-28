@@ -20,6 +20,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+
 
 @WebMvcTest(MovieController.class)
 class MovieControllerTest {
@@ -107,4 +109,51 @@ class MovieControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+
+    @Test
+    void shouldUpdateMovie() throws Exception {
+        Movie updatedMovie = new Movie();
+        updatedMovie.setId(1L);
+        updatedMovie.setTitle("Inception Updated");
+        updatedMovie.setGenre("Thriller");
+        updatedMovie.setDuration(150);
+        updatedMovie.setReleaseYear(2010);
+
+        when(movieService.updateMovie(eq(1L), any(Movie.class)))
+                .thenReturn(updatedMovie);
+
+        mockMvc.perform(put("/movies/1")
+                .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                .content("""
+                {
+                  "title": "Inception Updated",
+                  "genre": "Thriller",
+                  "duration": 150,
+                  "releaseYear": 2010
+                }
+                """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Inception Updated"))
+                .andExpect(jsonPath("$.genre").value("Thriller"))
+                .andExpect(jsonPath("$.duration").value(150))
+                .andExpect(jsonPath("$.releaseYear").value(2010));
+    }
+
+    @Test
+    void shouldReturn404WhenUpdatingNonExistentMovie() throws Exception {
+        when(movieService.updateMovie(eq(999L), any(Movie.class)))
+                .thenThrow(new MovieNotFoundException(999L));
+
+        mockMvc.perform(put("/movies/999")
+                .contentType(String.valueOf(MediaType.APPLICATION_JSON))
+                .content("""
+                {
+                  "title": "New Title",
+                  "genre": "Drama",
+                  "duration": 120,
+                  "releaseYear": 2020
+                }
+                """))
+                .andExpect(status().isNotFound());
+    }
 }
