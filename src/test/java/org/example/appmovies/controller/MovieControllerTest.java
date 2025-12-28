@@ -1,5 +1,6 @@
 package org.example.appmovies.controller;
 
+import org.junit.jupiter.api.Test;
 import org.example.appmovies.model.Movie;
 import org.example.appmovies.service.MovieService;
 import org.junit.jupiter.api.MediaType;
@@ -7,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testng.annotations.Test;
+
+import org.example.appmovies.exception.MovieNotFoundException;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 import java.util.Arrays;
 
@@ -61,5 +64,29 @@ class MovieControllerTest {
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[0].title").value("Inception"))
                 .andExpect(jsonPath("$[1].title").value("Interstellar"));
+    }
+
+    @Test
+    void shouldGetMovieById() throws Exception {
+        Movie movie = new Movie();
+        movie.setId(1L);
+        movie.setTitle("Inception");
+
+        when(movieService.getMovieById(1L))
+                .thenReturn(movie);
+
+        mockMvc.perform(get("/movies/1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.title").value("Inception"));
+    }
+
+    @Test
+    void shouldReturn404WhenMovieNotFound() throws Exception {
+        when(movieService.getMovieById(999L))
+                .thenThrow(new MovieNotFoundException(999L));
+
+        mockMvc.perform(get("/movies/999"))
+                .andExpect(status().isNotFound());
     }
 }
