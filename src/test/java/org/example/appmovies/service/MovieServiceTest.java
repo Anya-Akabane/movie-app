@@ -8,6 +8,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -32,6 +35,24 @@ class MovieServiceTest {
         Movie result = movieService.createMovie(movie);
 
         assertEquals("Inception", result.getTitle());
+    }
+
+    @Test
+    void shouldGetAllMovies() {
+        Movie movie1 = new Movie();
+        movie1.setTitle("Inception");
+
+        Movie movie2 = new Movie();
+        movie2.setTitle("Interstellar");
+
+        when(movieRepository.findAll())
+                .thenReturn(Arrays.asList(movie1, movie2));
+
+        List<Movie> result = movieService.getAllMovies();
+
+        assertEquals(2, result.size());
+        assertEquals("Inception", result.get(0).getTitle());
+        assertEquals("Interstellar", result.get(1).getTitle());
     }
 }
 
