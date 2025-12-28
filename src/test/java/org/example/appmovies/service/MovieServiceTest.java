@@ -110,5 +110,43 @@ class MovieServiceTest {
             movieService.deleteMovie(999L);
         });
     }
+
+    @Test
+    void shouldUpdateMovie() {
+        Movie existingMovie = new Movie();
+        existingMovie.setId(1L);
+        existingMovie.setTitle("Inception");
+
+        Movie updatedData = new Movie();
+        updatedData.setTitle("Inception Updated");
+        updatedData.setGenre("Thriller");
+        updatedData.setDuration(150);
+        updatedData.setReleaseYear(2010);
+
+        when(movieRepository.findById(1L))
+                .thenReturn(Optional.of(existingMovie));
+        when(movieRepository.save(any(Movie.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        Movie result = movieService.updateMovie(1L, updatedData);
+
+        assertEquals("Inception Updated", result.getTitle());
+        assertEquals("Thriller", result.getGenre());
+        assertEquals(150, result.getDuration());
+        assertEquals(2010, result.getReleaseYear());
+    }
+
+    @Test
+    void shouldThrowExceptionWhenUpdatingNonExistentMovie() {
+        Movie updatedData = new Movie();
+        updatedData.setTitle("New Title");
+
+        when(movieRepository.findById(999L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(MovieNotFoundException.class, () -> {
+            movieService.updateMovie(999L, updatedData);
+        });
+    }
 }
 
