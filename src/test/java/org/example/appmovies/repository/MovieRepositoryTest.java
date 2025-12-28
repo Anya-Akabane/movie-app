@@ -61,4 +61,20 @@ class MovieRepositoryTest {
         Optional<Movie> found = movieRepository.findById(saved.getId());
         assertTrue(found.isEmpty());
     }
+
+    @Test
+    void shouldUpdateMovie() {
+        Movie movie = new Movie();
+        movie.setTitle("Inception");
+        movie.setGenre("Sci-Fi");
+        Movie saved = movieRepository.save(movie);
+
+        saved.setTitle("Inception Updated");
+        saved.setGenre("Thriller");
+        Movie updated = movieRepository.save(saved);
+
+        assertEquals("Inception Updated", updated.getTitle());
+        assertEquals("Thriller", updated.getGenre());
+        assertEquals(saved.getId(), updated.getId());
+    }
 }
