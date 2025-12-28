@@ -7,5 +7,7 @@ import java.util.List;
 public interface MovieService {
     Movie createMovie(Movie movie);
     List<Movie> getAllMovies();
+    Movie getMovieById(Long id);
+
 
 }
