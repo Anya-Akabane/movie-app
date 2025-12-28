@@ -9,9 +9,13 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MovieController.class)
@@ -39,5 +43,23 @@ class MovieControllerTest {
                 }
                 """))
                 .andExpect(status().isOk());
+    }
+
+    @org.junit.jupiter.api.Test
+    void shouldGetAllMovies() throws Exception {
+        Movie movie1 = new Movie();
+        movie1.setTitle("Inception");
+
+        Movie movie2 = new Movie();
+        movie2.setTitle("Interstellar");
+
+        when(movieService.getAllMovies())
+                .thenReturn(Arrays.asList(movie1, movie2));
+
+        mockMvc.perform(get("/movies"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].title").value("Inception"))
+                .andExpect(jsonPath("$[1].title").value("Interstellar"));
     }
 }
