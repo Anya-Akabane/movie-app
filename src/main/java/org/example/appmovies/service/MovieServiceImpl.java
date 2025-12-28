@@ -31,5 +31,13 @@ public class MovieServiceImpl implements MovieService {
         return repository.findById(id)
                 .orElseThrow(() -> new MovieNotFoundException(id));
     }
+
+    @Override
+    public void deleteMovie(Long id) {
+        if (!repository.existsById(id)) {
+            throw new MovieNotFoundException(id);
+        }
+        repository.deleteById(id);
+    }
 }
 
