@@ -25,4 +25,9 @@ public class MovieController {
     public List<Movie> getAllMovies() {
         return service.getAllMovies();
     }
+
+    @GetMapping("/{id}")
+    public Movie getMovieById(@PathVariable Long id) {
+        return service.getMovieById(id);
+    }
 }
