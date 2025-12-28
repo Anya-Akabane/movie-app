@@ -49,4 +49,16 @@ class MovieRepositoryTest {
 
         assertTrue(found.isEmpty());
     }
+
+    @Test
+    void shouldDeleteMovie() {
+        Movie movie = new Movie();
+        movie.setTitle("Inception");
+        Movie saved = movieRepository.save(movie);
+
+        movieRepository.deleteById(saved.getId());
+
+        Optional<Movie> found = movieRepository.findById(saved.getId());
+        assertTrue(found.isEmpty());
+    }
 }
