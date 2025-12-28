@@ -9,6 +9,7 @@ public interface MovieService {
     List<Movie> getAllMovies();
     Movie getMovieById(Long id);
     void deleteMovie(Long id);
+    Movie updateMovie(Long id, Movie movie);
 
 
 }
