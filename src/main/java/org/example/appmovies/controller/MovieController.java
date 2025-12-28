@@ -2,6 +2,7 @@ package org.example.appmovies.controller;
 
 import org.example.appmovies.model.Movie;
 import org.example.appmovies.service.MovieService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,5 +30,11 @@ public class MovieController {
     @GetMapping("/{id}")
     public Movie getMovieById(@PathVariable Long id) {
         return service.getMovieById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteMovie(@PathVariable Long id) {
+        service.deleteMovie(id);
     }
 }
