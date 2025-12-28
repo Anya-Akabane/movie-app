@@ -4,6 +4,8 @@ import org.example.appmovies.model.Movie;
 import org.example.appmovies.repository.MovieRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MovieServiceImpl implements MovieService {
 
@@ -16,6 +18,11 @@ public class MovieServiceImpl implements MovieService {
     @Override
     public Movie createMovie(Movie movie) {
         return repository.save(movie);
+    }
+
+    @Override
+    public List<Movie> getAllMovies() {
+        return repository.findAll();
     }
 }
 
