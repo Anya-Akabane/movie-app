@@ -5,6 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
 @DataJpaTest
@@ -22,4 +25,18 @@ class MovieRepositoryTest {
 
         assertNotNull(saved.getId());
     }
-}
+
+    @Test
+    void shouldFindAllMovies() {
+        Movie movie1 = new Movie();
+        movie1.setTitle("Inception");
+        movieRepository.save(movie1);
+
+        Movie movie2 = new Movie();
+        movie2.setTitle("Interstellar");
+        movieRepository.save(movie2);
+
+        List<Movie> movies = movieRepository.findAll();
+
+        assertEquals(2, movies.size());
+    }}
