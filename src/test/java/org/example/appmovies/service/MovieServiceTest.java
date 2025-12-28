@@ -17,6 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
 class MovieServiceTest {
@@ -81,6 +83,31 @@ class MovieServiceTest {
 
         assertThrows(MovieNotFoundException.class, () -> {
             movieService.getMovieById(999L);
+        });
+    }
+
+
+
+    @Test
+    void shouldDeleteMovie() {
+        Movie movie = new Movie();
+        movie.setId(1L);
+
+        when(movieRepository.findById(1L))
+                .thenReturn(Optional.of(movie));
+
+        movieService.deleteMovie(1L);
+
+        verify(movieRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void shouldThrowExceptionWhenDeletingNonExistentMovie() {
+        when(movieRepository.findById(999L))
+                .thenReturn(Optional.empty());
+
+        assertThrows(MovieNotFoundException.class, () -> {
+            movieService.deleteMovie(999L);
         });
     }
 }
