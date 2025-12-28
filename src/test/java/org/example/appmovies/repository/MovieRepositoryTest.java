@@ -2,6 +2,10 @@ package org.example.appmovies.repository;
 
 import org.example.appmovies.model.Movie;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertNotNull;
 
 @DataJpaTest
 class MovieRepositoryTest {
